@@ -1,0 +1,63 @@
+//dbdiagram.io
+
+Table users {
+  id uuid [primary key]
+  name varchar
+  role varchar
+  delivery_address text
+  favorite_products array
+}
+
+Table categories {
+  id uuid [primary key]
+  name varchar
+  tag varchar
+}
+
+Table products{
+  id uuid [primary key]
+  name varchar
+  description text
+  category_id uuid
+  price double
+  quantity integer
+  vendor_id uuid
+  promotion_id uuid
+}
+
+Table vendors{
+  id uuid [primary key]
+  name varchar
+  owner_id uuid
+  description text
+  validated boolean
+}
+
+Table couriers{
+  id uuid [primary key]
+  name varchar
+  delivery_price double
+}
+
+Table orders{
+  id uuid [primary key]
+  user_id uuid
+  product_id array
+  quantity integer
+  courier_id uuid
+  total_price double
+}
+
+Table promotions{
+  id uuid [primary key]
+  discount_value double
+  discount_type varchar
+}
+
+Ref: couriers.id - orders.courier_id
+Ref: users.id - orders.user_id
+Ref: categories.id - products.category_id
+Ref: products.id > orders.product_id
+Ref: products.vendor_id - vendors.id
+Ref: vendors.owner_id - users.id
+Ref: products.promotion_id - promotions.id

@@ -1,0 +1,17 @@
+version: "3"
+services:
+  db:
+    image: postgres:14.0
+    container_name: main_container
+    restart: always
+    environment:
+      - POSTGRES_DB=main_db
+      - POSTGRES_USER=ddos
+      - POSTGRES_PASSWORD=niggas
+      - POSTGRES_EXTENSIONS=pgcrypto
+
+    volumes:
+      - ./pglocal/tables_generate.sql:/docker-entrypoint-initdb.d/1.sql
+      - ./pglocal/tables_populate.sql:/docker-entrypoint-initdb.d/2.sql
+    ports:
+      - 5433:5432
