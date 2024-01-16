@@ -1,4 +1,4 @@
-package com.magazin.main.controller;
+package com.magazin.main.service;
 
 import com.magazin.main.entities.*;
 import com.magazin.main.repositories.*;
@@ -11,20 +11,20 @@ import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.*;
-import java.util.Optional;
-import com.magazin.main.*;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class CategoryControllerTest {
+public class CategoryServiceTest {
     @Mock
     private CategoryRepository categoryRepository;
 
     @Mock
     private ProductRepository productRepository;
     private Product product;
+    private List<Product> productList;
     @Mock
     private ProductService productService;
 
@@ -46,26 +46,42 @@ public class CategoryControllerTest {
                 UUID.fromString("0dad31dd-6bef-4591-91af-620891541385"),
                 UUID.fromString("3c232a79-50d2-4401-9ba4-2677d591b75f")
         );
-
-
+        Category category1 = new Category(
+                UUID.fromString("ca07c25c-d93d-4a5f-9e0f-61bf4c8077fd"),
+                "IT si Tehnologie","it"
+        );
+        Category category2 = new Category(
+                UUID.fromString("4431839d-6280-4db9-8513-6f3799d92383"),
+                "Mancare","food"
+        );
+        productList = new ArrayList<>();
+        productList.add(product);
+        categoryList = new ArrayList<>();
+        categoryList.add(category1);
+        categoryList.add(category2);
     }
 
     @Test
     void getAllCategoriesTest(){
-        when(categoryRepository.findAll()).thenReturn(Collections.singletonList(category));
-        List<Category> categories = categoryService.getAllCategories();
-        assertFalse(categories.isEmpty());
-        assertEquals(1,categories.size());
-        System.out.println(category);
+//        System.out.println(categoryList);
+//        when(categoryRepository.findAll()).thenReturn(List.of(category));
+        given(categoryRepository.findAll()).willReturn(categoryList);
+        categoryList = categoryService.getAllCategories();
+        assertFalse(categoryList.isEmpty());
+        assertEquals(2,categoryList.size());
+//        System.out.println(categoryList);
         verify(categoryRepository, times(1)).findAll();
     }
 
     @Test
     void getSingleCategoryTest(){
-        Product firstProduct = productService.getAllProducts().get(1);
+        Product firstProduct = productList.get(0);
 
-        when(categoryRepository.findCategoryById(firstProduct.getCategory_id())).thenReturn(category);
-        Category testCategory = categoryRepository.findCategoryById(firstProduct.getCategory_id());
+        UUID testCatId = firstProduct.getCategory_id();
+        System.out.println(testCatId);
+
+        given(categoryService.getCategory(testCatId)).willReturn(category);
+        Category testCategory = categoryService.getCategory(testCatId);
 
         assertNotNull(testCategory);
         assertEquals(testCategory.getId(), firstProduct.getCategory_id());
