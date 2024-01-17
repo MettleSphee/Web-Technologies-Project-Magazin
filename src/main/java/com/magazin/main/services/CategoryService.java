@@ -18,5 +18,7 @@ public class CategoryService {
         return repository.findById(id).get();
     }
 
-    public List<Category> getAllCategories(){return repository.findAll();}
+    public List<Category> getAllCategories(){
+        return repository.findAll();
+    }
 }
